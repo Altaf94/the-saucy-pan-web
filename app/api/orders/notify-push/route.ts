@@ -5,10 +5,12 @@ import { Pool } from 'pg';
 
 export const runtime = 'nodejs';
 
-// Postgres pool
+// Postgres pool — only enable SSL for non-local databases (Vercel/Neon/Supabase etc.)
+const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const isLocalDb = !databaseUrl || databaseUrl.includes('localhost') || databaseUrl.includes('127.0.0.1');
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  connectionString: databaseUrl,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false },
 });
 
 // Web Push VAPID configuration

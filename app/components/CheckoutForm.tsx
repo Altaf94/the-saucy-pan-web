@@ -104,7 +104,7 @@ export default function CheckoutForm() {
       deliveryInstructions: customer.deliveryInstructions,
     };
 
-    // Send notifications via Email AND WhatsApp (in parallel)
+    // Send notifications via Email and Push (in parallel)
     const sendNotification = async (endpoint: string, name: string) => {
       try {
         const res = await fetch(endpoint, {
@@ -123,10 +123,9 @@ export default function CheckoutForm() {
       }
     };
 
-    // Send all notifications in parallel (Email, WhatsApp, Push)
+    // Send all notifications in parallel (Email, Push)
     await Promise.all([
       sendNotification('/api/orders/notify-email', 'Email'),
-      sendNotification('/api/orders/notify-whatsapp', 'WhatsApp'),
       sendNotification('/api/orders/notify-push', 'Push'),
     ]);
 

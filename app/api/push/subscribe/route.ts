@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
-// Create connection pool
+// Create connection pool — only enable SSL for non-local databases
+const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const isLocalDb = !databaseUrl || databaseUrl.includes('localhost') || databaseUrl.includes('127.0.0.1');
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  connectionString: databaseUrl,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false },
 });
 
 // Initialize table on first run

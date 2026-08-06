@@ -12,9 +12,11 @@ webPush.setVapidDetails(
   VAPID_PRIVATE_KEY
 );
 
+const databaseUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const isLocalDb = !databaseUrl || databaseUrl.includes('localhost') || databaseUrl.includes('127.0.0.1');
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  connectionString: databaseUrl,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false },
 });
 
 export async function POST(request: NextRequest) {
